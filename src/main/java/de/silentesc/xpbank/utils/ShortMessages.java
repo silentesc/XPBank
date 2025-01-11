@@ -9,7 +9,12 @@ public class ShortMessages {
     }
 
     public static void notAPlayer(CommandSender sender) {
-        sender.sendMessage(formatMessage("Only players can execute this command!"));
+        sender.sendMessage(formatMessage("§cOnly players can execute this command!"));
+    }
+
+    public static void wrongUsage(CommandSender sender, String[] usages) {
+        sendMessage(sender, "§cWrong usage! §fHere are some examples:");
+        sender.sendMessage(usages);
     }
 
     private static String formatMessage(String message) {
