@@ -8,6 +8,10 @@ public class ShortMessages {
         sender.sendMessage(formatMessage(message));
     }
 
+    public static void notAPlayer(CommandSender sender) {
+        sender.sendMessage(formatMessage("Only players can execute this command!"));
+    }
+
     private static String formatMessage(String message) {
         return String.format("%s%s", Main.getINSTANCE().getPluginConfig().getPrefix(), message);
     }
