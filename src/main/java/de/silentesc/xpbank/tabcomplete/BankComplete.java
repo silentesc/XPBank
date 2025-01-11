@@ -36,11 +36,9 @@ public class BankComplete implements TabCompleter {
         else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("deposit")) {
                 result.add(String.valueOf(XpUtils.getXp(player)));
-                result.add(String.valueOf(XpUtils.getXp(player) / 2));
             }
             else if (args[0].equalsIgnoreCase("withdraw")) {
                 result.add(String.valueOf(BankUtils.getBalance(player.getUniqueId())));
-                result.add(String.valueOf(BankUtils.getBalance(player.getUniqueId()) / 2));
             }
             else if (args[0].equalsIgnoreCase("transfer")) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
@@ -52,7 +50,6 @@ public class BankComplete implements TabCompleter {
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("transfer")) {
             result.add(String.valueOf(BankUtils.getBalance(player.getUniqueId())));
-            result.add(String.valueOf(BankUtils.getBalance(player.getUniqueId()) / 2));
         }
 
         return result;
