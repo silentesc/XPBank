@@ -1,9 +1,7 @@
 package de.silentesc.xpbank.commands;
 
-import de.silentesc.xpbank.utils.BankUtils;
-import de.silentesc.xpbank.utils.JavaUtils;
-import de.silentesc.xpbank.utils.ShortMessages;
-import de.silentesc.xpbank.utils.XpUtils;
+import de.silentesc.xpbank.Main;
+import de.silentesc.xpbank.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -64,11 +62,13 @@ public class BankCommand implements CommandExecutor {
     }
 
     private void balanceLogic(Player player) {
+        // TODO Balance header
         ShortMessages.sendMessage(player, String.format("Your bank-balance is: §a%d", BankUtils.getBalance(player.getUniqueId())));
         ShortMessages.sendMessage(player, String.format("XP in your xp-bar: §a%d", XpUtils.getXp(player)));
     }
 
     private void depositLogic(Player player, int amount) {
+        // TODO Deposit header
         if (XpUtils.getXp(player) < amount) {
             ShortMessages.sendMessage(player, "You don't have enough xp to do that!");
             return;
@@ -77,13 +77,18 @@ public class BankCommand implements CommandExecutor {
             ShortMessages.sendMessage(player, "You cannot deposit any amount smaller that 1.");
             return;
         }
-        // TODO Deposit Fees
-        XpUtils.removeXp(player, amount);
+
+        int feesPercentage = Main.getINSTANCE().getPluginConfig().getDepositFees();
+        int fees = (int) (amount * (feesPercentage / 100.0));
+        amount -= fees;
+
+        XpUtils.removeXp(player, amount + fees);
         BankUtils.addBalance(player.getUniqueId(), amount);
-        ShortMessages.sendMessage(player, String.format("You have deposited §a%d §7xp into your bank!", amount));
+        ShortMessages.sendMessage(player, String.format("You have deposited §a%d §7xp into your bank! (%d fees)", amount, fees));
     }
 
     private void withdrawLogic(Player player, int amount) {
+        // TODO Withdraw header
         if (BankUtils.getBalance(player.getUniqueId()) < amount) {
             ShortMessages.sendMessage(player, "You don't have enough balance to do that!");
             return;
@@ -92,13 +97,18 @@ public class BankCommand implements CommandExecutor {
             ShortMessages.sendMessage(player, "You cannot withdraw any amount smaller that 1.");
             return;
         }
-        // TODO Withdraw Fees
-        BankUtils.removeBalance(player.getUniqueId(), amount);
+
+        int feesPercentage = Main.getINSTANCE().getPluginConfig().getWithdrawFees();
+        int fees = (int) (amount * (feesPercentage / 100.0));
+        amount -= fees;
+
+        BankUtils.removeBalance(player.getUniqueId(), amount + fees);
         XpUtils.addXp(player, amount);
-        ShortMessages.sendMessage(player, String.format("You have withdrawn §a%d §7xp from your bank!", amount));
+        ShortMessages.sendMessage(player, String.format("You have withdrawn §a%d §7xp from your bank! (%d fees)", amount, fees));
     }
 
     private void transferLogic(Player player, Player target, int amount) {
+        // TODO Transfer header
         if (player == target) {
             ShortMessages.sendMessage(player, "You cannot transfer balance to yourself!");
             return;
@@ -111,10 +121,14 @@ public class BankCommand implements CommandExecutor {
             ShortMessages.sendMessage(player, "You cannot transfer any amount smaller that 1.");
             return;
         }
-        // TODO Transfer Fees
-        BankUtils.removeBalance(player.getUniqueId(), amount);
+
+        int feesPercentage = Main.getINSTANCE().getPluginConfig().getTransferFees();
+        int fees = (int) (amount * (feesPercentage / 100.0));
+        amount -= fees;
+
+        BankUtils.removeBalance(player.getUniqueId(), amount + fees);
         BankUtils.addBalance(target.getUniqueId(), amount);
-        ShortMessages.sendMessage(player, String.format("You have transferred a balance of §a%d §7to §e%s§7!", amount, target.getDisplayName()));
+        ShortMessages.sendMessage(player, String.format("You have transferred a balance of §a%d §7to §e%s§7! (%d fees)", amount, target.getDisplayName(), fees));
         ShortMessages.sendMessage(target, String.format("You have received a balance of §a%d §7from §e%s§7!", amount, player.getDisplayName()));
     }
 
