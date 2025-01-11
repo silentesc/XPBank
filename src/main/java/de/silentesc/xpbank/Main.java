@@ -15,7 +15,6 @@ public final class Main extends JavaPlugin {
 
     private static Main INSTANCE;
     private final String configPath = "config.yaml";
-    private final String bankDataPath = "bank_data.yaml";
     private PluginConfig pluginConfig;
     private BankData bankData;
 
@@ -29,15 +28,17 @@ public final class Main extends JavaPlugin {
         loadCommands();
     }
 
+    // Load config and data from yaml files
     private void loadConfigs() {
         File configFile = new File(String.format("%s/%s", getDataFolder().getPath(), configPath));
         if (!configFile.exists()) {
             saveResource(configPath, false);
         }
         pluginConfig = new PluginConfig();
-        bankData = new BankData();
+        bankData = new BankData("bank_data.yaml");
     }
 
+    // Load Commands and it's TabCompleter
     private void loadCommands() {
         Objects.requireNonNull(Bukkit.getPluginCommand("xpbank_reloadcfg")).setExecutor(new ReloadConfigCommand());
         Objects.requireNonNull(Bukkit.getPluginCommand("bank")).setExecutor(new BankCommand());
@@ -54,10 +55,6 @@ public final class Main extends JavaPlugin {
 
     public String getConfigPath() {
         return configPath;
-    }
-
-    public String getBankDataPath() {
-        return bankDataPath;
     }
 
     public PluginConfig getPluginConfig() {

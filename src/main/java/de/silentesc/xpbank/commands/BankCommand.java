@@ -33,22 +33,24 @@ public class BankCommand implements CommandExecutor {
             return true;
         }
 
+        // Execute logic functions depending on the args
+        // Also does some checking for the args, every logical check is handled in the logic functions
         switch (args[0].toLowerCase()) {
             case "fees" -> feesLogic(player);
             case "balance" -> balanceLogic(player);
             case "deposit" -> {
-                if (!checkArgsLength(args, 2, player, usages)) return true;
-                if (!checkStringIsInteger(args[1], player)) return true;
+                if (handleBadArgsLength(args, 2, player, usages)) return true;
+                if (handleStringNotInteger(args[1], player)) return true;
                 depositLogic(player, Integer.parseInt(args[1]));
             }
             case "withdraw" -> {
-                if (!checkArgsLength(args, 2, player, usages)) return true;
-                if (!checkStringIsInteger(args[1], player)) return true;
+                if (handleBadArgsLength(args, 2, player, usages)) return true;
+                if (handleStringNotInteger(args[1], player)) return true;
                 withdrawLogic(player, Integer.parseInt(args[1]));
             }
             case "transfer" -> {
-                if (!checkArgsLength(args, 3, player, usages)) return true;
-                if (!checkStringIsInteger(args[2], player)) return true;
+                if (handleBadArgsLength(args, 3, player, usages)) return true;
+                if (handleStringNotInteger(args[2], player)) return true;
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
                     ShortMessages.sendMessage(player, "§cPlayer does not exist!");
@@ -56,14 +58,13 @@ public class BankCommand implements CommandExecutor {
                 }
                 transferLogic(player, target, Integer.parseInt(args[2]));
             }
-            default -> {
-                ShortMessages.wrongUsage(player, usages);
-            }
+            default -> ShortMessages.wrongUsage(player, usages);
         }
 
         return true;
     }
 
+    // Sends the current fee settings to the player
     private void feesLogic(Player player) {
         int depositFees = Main.getINSTANCE().getPluginConfig().getDepositFees();
         int withdrawFees = Main.getINSTANCE().getPluginConfig().getWithdrawFees();
@@ -73,11 +74,14 @@ public class BankCommand implements CommandExecutor {
         ShortMessages.sendMessage(player, String.format("§fTransfer Fees: §7%s%%", transferFees));
     }
 
+    // Sends the bank balance and xp to the player
     private void balanceLogic(Player player) {
         ShortMessages.sendMessage(player, String.format("§fYour bank-balance is: §a%d", BankUtils.getBalance(player.getUniqueId())));
         ShortMessages.sendMessage(player, String.format("§fXP in your xp-bar: §a%d", XpUtils.getXp(player)));
     }
 
+    // Deposits xp in the bank after performing some logical checks
+    // Also considers fees
     private void depositLogic(Player player, int amount) {
         if (XpUtils.getXp(player) < amount) {
             ShortMessages.sendMessage(player, "§cYou don't have enough xp to do that!");
@@ -97,6 +101,8 @@ public class BankCommand implements CommandExecutor {
         ShortMessages.sendMessage(player, String.format("§fYou have deposited §a%d §fxp into your bank! §7(%d fees)", amount, fees));
     }
 
+    // Withdraws balance from the bank after performing some logical checks
+    // Also considers fees
     private void withdrawLogic(Player player, int amount) {
         if (BankUtils.getBalance(player.getUniqueId()) < amount) {
             ShortMessages.sendMessage(player, "§cYou don't have enough balance to do that!");
@@ -116,6 +122,8 @@ public class BankCommand implements CommandExecutor {
         ShortMessages.sendMessage(player, String.format("§fYou have withdrawn §a%d §fxp from your bank! §7(%d fees)", amount, fees));
     }
 
+    // Transfers balance to another player after performing some logical checks
+    // Also considers fees
     private void transferLogic(Player player, Player target, int amount) {
         if (player == target) {
             ShortMessages.sendMessage(player, "§cYou cannot transfer balance to yourself!");
@@ -144,21 +152,21 @@ public class BankCommand implements CommandExecutor {
      * Private utils
      */
 
-    // Returns true if args length is ok, false otherwise
-    private boolean checkArgsLength(String[] args, int requiredArgsLength, Player player, String[] usages) {
+    // Returns true if args length is not matching, false otherwise
+    private boolean handleBadArgsLength(String[] args, int requiredArgsLength, Player player, String[] usages) {
         if (args.length != requiredArgsLength) {
             ShortMessages.wrongUsage(player, usages);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    // Returns true if string is integer, false otherwise
-    private boolean checkStringIsInteger(String string, Player player) {
+    // Returns true if string is not integer, false otherwise
+    private boolean handleStringNotInteger(String string, Player player) {
         if (!JavaUtils.isStringInteger(string)) {
             ShortMessages.sendMessage(player, "§cThe amount has to be an integer!");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
