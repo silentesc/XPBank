@@ -4,3 +4,14 @@ main: de.silentesc.xpbank.Main
 api-version: '1.21'
 authors: [ silentesc ]
 description: A simple 1.21.4 Spigot Plugin where you can deposit your xp levels into your bank and send them to other players.
+
+commands:
+  xpbank_reloadcfg:
+    description: Reloads the config
+    usage: xpbank_reloadcfg
+    permission: xpbank.reload
+
+permissions:
+  xpbank.reload:
+    description: Permission to use /xpbank_reloadcfg
+    default: op

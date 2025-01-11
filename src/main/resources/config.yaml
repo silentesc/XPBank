@@ -1,0 +1,14 @@
+### Plugin Chat Prefix ###
+# The prefix before chat messages from the plugin.
+prefix: "§7[§eXPBank§7] "
+
+### Transaction fees ###
+# The amount of xp (in percent) that a transaction costs.
+# This exists to nerf the power of not risking xp on death.
+fees:
+  deposit:
+    percentage: 0
+  withdraw:
+    percentage: 0
+  transfer:
+    percentage: 0
