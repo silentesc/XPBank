@@ -10,6 +10,9 @@ commands:
     description: Reloads the config
     usage: xpbank_reloadcfg
     permission: xpbank.reload
+  bank:
+    description: Everything related to deposit, withdraw, transfer or just show the xp points.
+    usage: bank
 
 permissions:
   xpbank.reload:

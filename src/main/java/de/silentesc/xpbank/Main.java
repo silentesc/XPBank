@@ -1,6 +1,8 @@
 package de.silentesc.xpbank;
 
+import de.silentesc.xpbank.commands.BankCommand;
 import de.silentesc.xpbank.commands.ReloadConfigCommand;
+import de.silentesc.xpbank.tabcomplete.BankComplete;
 import de.silentesc.xpbank.utils.BankData;
 import de.silentesc.xpbank.utils.PluginConfig;
 import org.bukkit.Bukkit;
@@ -38,6 +40,8 @@ public final class Main extends JavaPlugin {
 
     private void loadCommands() {
         Objects.requireNonNull(Bukkit.getPluginCommand("xpbank_reloadcfg")).setExecutor(new ReloadConfigCommand());
+        Objects.requireNonNull(Bukkit.getPluginCommand("bank")).setExecutor(new BankCommand());
+        Objects.requireNonNull(Bukkit.getPluginCommand("bank")).setTabCompleter(new BankComplete());
     }
 
     /**

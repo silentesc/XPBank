@@ -22,4 +22,8 @@ public class XpUtils {
         player.setExp(0);
         player.setTotalExperience(0);
     }
+
+    public static int getXp(Player player) {
+        return player.getTotalExperience();
+    }
 }

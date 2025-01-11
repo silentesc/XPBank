@@ -7,7 +7,7 @@ import java.util.UUID;
 public class BankUtils {
     public static void addBalance(UUID uuid, int balance) {
         BankData bankData = Main.getINSTANCE().getBankData();
-        int currentBalance = bankData.getData().get(uuid);
+        int currentBalance = bankData.getData().get(uuid) == null ? 0 : bankData.getData().get(uuid);
         currentBalance += balance;
         bankData.getData().put(uuid, currentBalance);
         bankData.saveBankData();
@@ -15,7 +15,7 @@ public class BankUtils {
 
     public static void removeBalance(UUID uuid, int balance) {
         BankData bankData = Main.getINSTANCE().getBankData();
-        int currentBalance = bankData.getData().get(uuid);
+        int currentBalance = bankData.getData().get(uuid) == null ? 0 : bankData.getData().get(uuid);
         currentBalance -= balance;
         bankData.getData().put(uuid, currentBalance);
         bankData.saveBankData();
@@ -29,6 +29,6 @@ public class BankUtils {
 
     public static int getBalance(UUID uuid) {
         BankData bankData = Main.getINSTANCE().getBankData();
-        return bankData.getData().get(uuid);
+        return bankData.getData().get(uuid) == null ? 0 : bankData.getData().get(uuid);
     }
 }
