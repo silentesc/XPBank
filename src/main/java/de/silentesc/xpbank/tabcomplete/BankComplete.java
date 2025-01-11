@@ -26,6 +26,7 @@ public class BankComplete implements TabCompleter {
 
         List<String> result = new ArrayList<>();
 
+        // Auto complete arguments from above
         if (args.length == 1) {
             for (String arg : arguments) {
                 if (arg.toLowerCase().contains(args[0].toLowerCase())) {
@@ -33,6 +34,8 @@ public class BankComplete implements TabCompleter {
                 }
             }
         }
+        // For "deposit" & "withdraw", displays current xp or balance to show the user what he can use max
+        // For "transfer", displays all available players except for himself
         else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("deposit")) {
                 result.add(String.valueOf(XpUtils.getXp(player)));
@@ -48,6 +51,7 @@ public class BankComplete implements TabCompleter {
                 }
             }
         }
+        // For "transfer" when also specified a user, display current balance to show the user what he can transfer max
         else if (args.length == 3 && args[0].equalsIgnoreCase("transfer")) {
             result.add(String.valueOf(BankUtils.getBalance(player.getUniqueId())));
         }

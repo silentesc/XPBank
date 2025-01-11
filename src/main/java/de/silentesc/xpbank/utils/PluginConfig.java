@@ -12,6 +12,7 @@ public class PluginConfig {
         loadConfig();
     }
 
+    // Load everything from file into variables
     public void loadConfig() {
         FileConfig config = new FileConfig(Main.getINSTANCE().getConfigPath());
         prefix = config.getString("prefix") == null ? "" : config.getString("prefix");
