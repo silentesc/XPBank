@@ -12,8 +12,4 @@
 - /bank transfer [player] [amount] `-> Transfers balance from your bank to another player`
 
 ### Config settings
-- Prefix
-- Fees in percentage for:
-  - Deposite xp to bank
-  - Withdraw balance from bank
-  - Transfer balance to other players
+![image](https://github.com/user-attachments/assets/080e1b46-4c13-4ba9-9eb3-a722e257bd05)
