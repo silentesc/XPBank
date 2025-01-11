@@ -7,7 +7,7 @@ prefix: "§7[§eXPBank§7] "
 # This exists to nerf the power of not risking xp on death.
 fees:
   deposit:
-    percentage: 0
+    percentage: 10
   withdraw:
     percentage: 0
   transfer:
