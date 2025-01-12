@@ -4,9 +4,12 @@ import de.silentesc.xpbank.Main;
 
 public class PluginConfig {
     private String prefix;
-    private int depositFees;
-    private int withdrawFees;
-    private int transferFees;
+    private int depositFeeFlat;
+    private int depositFeePercentage;
+    private int withdrawFeeFlat;
+    private int withdrawFeePercentage;
+    private int transferFeeFlat;
+    private int transferFeePercentage;
 
     public PluginConfig() {
         loadConfig();
@@ -16,9 +19,12 @@ public class PluginConfig {
     public void loadConfig() {
         FileConfig config = new FileConfig(Main.getINSTANCE().getConfigPath());
         prefix = config.getString("prefix") == null ? "" : config.getString("prefix");
-        depositFees = config.getInt("fees.deposit.percentage");
-        withdrawFees = config.getInt("fees.withdraw.percentage");
-        transferFees = config.getInt("fees.transfer.percentage");
+        depositFeeFlat = config.getInt("fees.deposit.flat");
+        depositFeePercentage = config.getInt("fees.deposit.percentage");
+        withdrawFeeFlat = config.getInt("fees.withdraw.flat");
+        withdrawFeePercentage = config.getInt("fees.withdraw.percentage");
+        transferFeeFlat = config.getInt("fees.transfer.flat");
+        transferFeePercentage = config.getInt("fees.transfer.percentage");
     }
 
     /**
@@ -29,15 +35,27 @@ public class PluginConfig {
         return prefix;
     }
 
-    public int getDepositFees() {
-        return depositFees;
+    public int getDepositFeeFlat() {
+        return depositFeeFlat;
     }
 
-    public int getWithdrawFees() {
-        return withdrawFees;
+    public int getDepositFeePercentage() {
+        return depositFeePercentage;
     }
 
-    public int getTransferFees() {
-        return transferFees;
+    public int getWithdrawFeeFlat() {
+        return withdrawFeeFlat;
+    }
+
+    public int getWithdrawFeePercentage() {
+        return withdrawFeePercentage;
+    }
+
+    public int getTransferFeeFlat() {
+        return transferFeeFlat;
+    }
+
+    public int getTransferFeePercentage() {
+        return transferFeePercentage;
     }
 }
