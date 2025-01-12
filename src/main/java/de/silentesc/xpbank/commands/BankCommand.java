@@ -66,12 +66,15 @@ public class BankCommand implements CommandExecutor {
 
     // Sends the current fee settings to the player
     private void feesLogic(Player player) {
-        int depositFees = Main.getINSTANCE().getPluginConfig().getDepositFees();
-        int withdrawFees = Main.getINSTANCE().getPluginConfig().getWithdrawFees();
-        int transferFees = Main.getINSTANCE().getPluginConfig().getTransferFees();
-        ShortMessages.sendMessage(player, String.format("§fDeposit Fees: §7%s%%", depositFees));
-        ShortMessages.sendMessage(player, String.format("§fWithdraw Fees: §7%s%%", withdrawFees));
-        ShortMessages.sendMessage(player, String.format("§fTransfer Fees: §7%s%%", transferFees));
+        int depositFeeFlat = Main.getINSTANCE().getPluginConfig().getDepositFeeFlat();
+        int depositFeePercentage = Main.getINSTANCE().getPluginConfig().getDepositFeePercentage();
+        int withdrawFeeFlat = Main.getINSTANCE().getPluginConfig().getWithdrawFeeFlat();
+        int withdrawFeePercentage = Main.getINSTANCE().getPluginConfig().getWithdrawFeePercentage();
+        int transferFeeFlat = Main.getINSTANCE().getPluginConfig().getTransferFeeFlat();
+        int transferFeePercentage = Main.getINSTANCE().getPluginConfig().getTransferFeePercentage();
+        ShortMessages.sendMessage(player, String.format("§fDeposit Fees: §7%s flat + %s%%", depositFeeFlat, depositFeePercentage));
+        ShortMessages.sendMessage(player, String.format("§fWithdraw Fees: §7%s flat + %s%%", withdrawFeeFlat, withdrawFeePercentage));
+        ShortMessages.sendMessage(player, String.format("§fTransfer Fees: §7%s flat + %s%%", transferFeeFlat, transferFeePercentage));
     }
 
     // Sends the bank balance and xp to the player
@@ -92,9 +95,15 @@ public class BankCommand implements CommandExecutor {
             return;
         }
 
-        int feesPercentage = Main.getINSTANCE().getPluginConfig().getDepositFees();
-        int fees = (int) (amount * (feesPercentage / 100.0));
+        int feeFlat = Main.getINSTANCE().getPluginConfig().getDepositFeeFlat();
+        int feePercentage = Main.getINSTANCE().getPluginConfig().getDepositFeePercentage();
+        int fees = calculateFees(amount, feeFlat, feePercentage);
         amount -= fees;
+
+        if (amount < 1) {
+            ShortMessages.sendMessage(player, "§cDepositing declined: The amount - fees would be smaller that 0.");
+            return;
+        }
 
         XpUtils.removeXp(player, amount + fees);
         BankUtils.addBalance(player.getUniqueId(), amount);
@@ -113,9 +122,15 @@ public class BankCommand implements CommandExecutor {
             return;
         }
 
-        int feesPercentage = Main.getINSTANCE().getPluginConfig().getWithdrawFees();
-        int fees = (int) (amount * (feesPercentage / 100.0));
+        int feeFlat = Main.getINSTANCE().getPluginConfig().getWithdrawFeeFlat();
+        int feePercentage = Main.getINSTANCE().getPluginConfig().getWithdrawFeePercentage();
+        int fees = calculateFees(amount, feeFlat, feePercentage);
         amount -= fees;
+
+        if (amount < 1) {
+            ShortMessages.sendMessage(player, "§cWithdraw declined: The amount - fees would be smaller that 0.");
+            return;
+        }
 
         BankUtils.removeBalance(player.getUniqueId(), amount + fees);
         XpUtils.addXp(player, amount);
@@ -138,9 +153,15 @@ public class BankCommand implements CommandExecutor {
             return;
         }
 
-        int feesPercentage = Main.getINSTANCE().getPluginConfig().getTransferFees();
-        int fees = (int) (amount * (feesPercentage / 100.0));
+        int feeFlat = Main.getINSTANCE().getPluginConfig().getTransferFeeFlat();
+        int feePercentage = Main.getINSTANCE().getPluginConfig().getTransferFeePercentage();
+        int fees = calculateFees(amount, feeFlat, feePercentage);
         amount -= fees;
+
+        if (amount < 1) {
+            ShortMessages.sendMessage(player, "§cTransaction declined: The amount - fees would be smaller that 0.");
+            return;
+        }
 
         BankUtils.removeBalance(player.getUniqueId(), amount + fees);
         BankUtils.addBalance(target.getUniqueId(), amount);
@@ -168,5 +189,12 @@ public class BankCommand implements CommandExecutor {
             return true;
         }
         return false;
+    }
+
+    private int calculateFees(int amount, int feeFlat, int feePercentage) {
+        if (feeFlat > amount) {
+            return amount;
+        }
+        return (int) (feeFlat + ((amount - feeFlat) * (feePercentage / 100.0)));
     }
 }

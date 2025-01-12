@@ -3,12 +3,18 @@
 prefix: "§7[§eXPBank§7] "
 
 ### Transaction fees ###
-# The amount of xp (in percent) that a transaction costs.
+# The amount of xp/balance that a transaction costs.
 # This exists to nerf the power of not risking xp on death.
+# Flat: The amount of xp/balance that a transaction will cost no matter what the amount is.
+# Percentage: The amount of xp/balance that a transaction will cost, depending on the amount.
+# The fee is calculated like this: flat + ((amount - flat) * (percentage / 100))
 fees:
   deposit:
-    percentage: 10
+    flat: 100
+    percentage: 0
   withdraw:
+    flat: 0
     percentage: 0
   transfer:
+    flat: 0
     percentage: 0
